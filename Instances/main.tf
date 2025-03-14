@@ -87,25 +87,17 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   ingress {
-    description = "Allow Port 8081"
-    from_port   = 8081
-    to_port     = 8081
+    description = "Allow Port 8080"
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    description = "Allow Port 8082"
-    from_port   = 8082
-    to_port     = 8082
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Allow Port 8083"
-    from_port   = 8083
-    to_port     = 8083
+    description = "Allow Port 30000"
+    from_port   = 30000
+    to_port     = 30000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -124,21 +116,25 @@ resource "aws_security_group" "ec2_sg" {
 
 # Create an EC2 Key Pair
 resource "aws_key_pair" "ec2_key" {
-  key_name   = "CLO835_Assignment01"
-  public_key = file("CLO835_Assignment01.pub")
+  key_name   = "CLO835_Assignment02"
+  public_key = file("CLO835_Assignment02.pub")
 }
 
 # Create an EC2 instance
 resource "aws_instance" "ec2_instance" {
   ami                         = data.aws_ami.latest_amazon_linux.id
-  instance_type               = "t2.micro"
+  instance_type               = "t2.large"
   key_name                    = aws_key_pair.ec2_key.key_name
   subnet_id                   = aws_subnet.public_subnet.id
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = true
+  root_block_device {
+    volume_size = 50
+    volume_type = "gp2"
+  }
 
   tags = {
-    Name = "CLO835_EC2_Instance"
+    Name = "spatel494_CLO835_EC2_Instance_A2"
   }
 }
 
